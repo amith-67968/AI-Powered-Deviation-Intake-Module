@@ -1,0 +1,1 @@
+export default function Field({ label, required, source, children }) { return <label className="field"><span className="field-label">{label}{required && <b> *</b>}{source && <em className={source === 'ai' ? 'ai-tag' : 'edited-tag'}>{source === 'ai' ? 'AI Suggested' : 'Edited'}</em>}</span>{children}</label>; }

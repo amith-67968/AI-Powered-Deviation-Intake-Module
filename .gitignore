@@ -1,12 +1,25 @@
+# Environment files and secrets
 .env
-*.env
+.env.*
 !.env.example
+
+# Python
 __pycache__/
 *.py[cod]
 .venv/
+.pytest_cache/
+coverage/
+*.db
+
+# Frontend build and dependencies
 node_modules/
 dist/
-coverage/
-.pytest_cache/
-*.db
-*.db
+.vite/
+*.tsbuildinfo
+
+# Local tooling and operating-system files
+.chrome-*-profile/
+.tmp-*-profile/
+*.log
+.DS_Store
+Thumbs.db

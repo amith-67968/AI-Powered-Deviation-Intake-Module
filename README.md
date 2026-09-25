@@ -48,7 +48,7 @@ Copy `backend/.env.example` to `backend/.env` and set the values:
 
 ```env
 GROQ_API_KEY=your_groq_api_key
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-20b
 DATABASE_URL=postgresql+psycopg://YOUR_USER:YOUR_PASSWORD@YOUR_HOST:5432/postgres?sslmode=require
 CORS_ORIGINS=http://localhost:5173
 MAX_UPLOAD_MB=10
