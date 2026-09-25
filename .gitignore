@@ -8,3 +8,5 @@ node_modules/
 dist/
 coverage/
 .pytest_cache/
+*.db
+*.db

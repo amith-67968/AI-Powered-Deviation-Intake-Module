@@ -1,6 +1,6 @@
 # AIVOA.AI — AI-Powered Deviation Intake
 
-A working pharmaceutical QMS deviation-intake module. It accepts a PDF, DOCX, TXT, or pasted report/email; sends extracted text through a controlled LangGraph + Groq workflow; presents editable AI suggestions; and saves only after human review to PostgreSQL.
+A working pharmaceutical QMS deviation-intake module. It accepts a PDF, DOCX, TXT, or pasted report/email; sends extracted text through a controlled LangGraph + Groq workflow; presents editable AI suggestions; and saves only after human review to Supabase PostgreSQL.
 
 This is a **Deviation Management** module, not a customer-complaints workflow. AI impact and severity are explicitly initial recommendations, not official QA classifications.
 
@@ -9,7 +9,7 @@ This is a **Deviation Management** module, not a customer-complaints workflow. A
 ```text
 React + Redux Toolkit (frontend)  →  FastAPI API  →  LangGraph / Groq
                                            ↓
-                                      PostgreSQL
+                                  Supabase PostgreSQL
 ```
 
 `backend/app/api` contains HTTP routes; `services` owns persistence operations; `utils/document_parser.py` extracts files; `graph/deviation_graph.py` contains the typed LangGraph pipeline; Pydantic schemas constrain API and model output; SQLAlchemy owns the `deviations` table.
@@ -37,28 +37,24 @@ backend/
 
 - Python 3.11+
 - Node.js 20+
-- PostgreSQL 15+
+- A Supabase project with PostgreSQL enabled
 - A Groq API key
 
-## Configure PostgreSQL and environment
+## Configure Supabase PostgreSQL and environment
 
-Create a database, for example:
-
-```sql
-CREATE DATABASE aivoa_deviations;
-```
+In Supabase, open **Project Settings → Database** and copy either its direct connection URI or supported pooler URI. Convert its `postgresql://` prefix to `postgresql+psycopg://` for SQLAlchemy. Keep the connection string only in `backend/.env`; never place it in the frontend.
 
 Copy `backend/.env.example` to `backend/.env` and set the values:
 
 ```env
 GROQ_API_KEY=your_groq_api_key
 GROQ_MODEL=llama-3.3-70b-versatile
-DATABASE_URL=postgresql+psycopg://postgres:your_password@localhost:5432/aivoa_deviations
+DATABASE_URL=postgresql+psycopg://YOUR_USER:YOUR_PASSWORD@YOUR_HOST:5432/postgres?sslmode=require
 CORS_ORIGINS=http://localhost:5173
 MAX_UPLOAD_MB=10
 ```
 
-Tables are created on API startup for this challenge. In a production system, replace this startup creation with Alembic migrations.
+The backend uses one SQLAlchemy engine configured exclusively from `DATABASE_URL`. On startup it verifies the Supabase PostgreSQL connection, then creates the existing schema if it is missing. No local or SQLite fallback is used at runtime. In a production system, replace this startup creation with Alembic migrations.
 
 ## Start the backend
 
@@ -102,7 +98,7 @@ The extraction and validation nodes use the strict `ExtractionOutput` Pydantic m
 
 ## Database schema
 
-The PostgreSQL `deviations` table stores core intake fields, reviewed impact/severity, AI suggested impact/severity/reason/confidence, the raw structured extraction as JSONB, status (`Draft`, `Submitted`, `Under Review`, `Closed`), and timestamps. The demo flow saves records as `Draft`.
+The Supabase PostgreSQL `deviations` table stores core intake fields, reviewed impact/severity, AI suggested impact/severity/reason/confidence, the raw structured extraction as JSONB, status (`Draft`, `Submitted`, `Under Review`, `Closed`), and timestamps. The demo flow saves records as `Draft`.
 
 ## API endpoints
 
